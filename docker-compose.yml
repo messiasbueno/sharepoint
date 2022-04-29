@@ -1,0 +1,69 @@
+# adicione ao arquivo hosts do seu computador o seguinte DNS associado ao seu IP local
+# 192.168.0.113 api-sharepoint.eive.com.br
+# VPN 10.200.50.21
+
+version: "3.8"
+
+services:
+  frontend:
+    image: "italosouza/eive-sharepoint:${STAGE:-prod}"
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10mb'
+        max-file: '5'
+    depends_on:
+      postgres:
+        condition: service_started
+      init-db:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - DB_HOST=10.200.50.21
+      - DB_USER=postgres
+      - DB_PASS=postgres
+      - DB_NAME=postgres
+      - DB_PORT=5432
+      - DEBUG=true
+      - API_PORTA=7700
+    ports:
+      - target: 7700
+        published: 7700
+        mode: host
+
+  postgres:
+    image: postgres
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10mb'
+        max-file: '5'
+    restart: unless-stopped
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - target: 5432
+        published: 5432
+        mode: host
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  init-db:
+    image: "italosouza/eive-sharepoint:${STAGE:-prod}"
+    command: yarn migrate
+    environment:
+      - DB_HOST=10.200.50.21
+      - DB_USER=postgres
+      - DB_PASS=postgres
+      - DB_NAME=postgres
+      - DB_PORT=5432
+    depends_on:
+      postgres:
+        condition: service_started
+            
+volumes:
+  pg_data:
+

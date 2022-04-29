@@ -1,11 +1,10 @@
 package br.com.eive.sharepoint.controller.dto;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.stereotype.Component;
 
-import br.com.eive.sharepoint.model.Customer;
-
+@Component
 public class CustomerDto {
+	private Long id;
 	private String name;
 	private String notes;
 	private String dbInfo;
@@ -14,53 +13,86 @@ public class CustomerDto {
 	private String tier;
 	private String segment;
 	private String responsible;
+	private ContactDto contact;
 
-	public CustomerDto(Customer customer) {
-		this.name = customer.getName();
-		this.notes = customer.getNotes();
-		this.dbInfo = customer.getDbInfo();
-		this.usesVpn = customer.getUsesVpn();
-		this.usesNewIntegration = customer.getUsesNewIntegration();
-		this.tier = customer.getTier();
-		this.segment = customer.getSegment();
-		this.responsible = customer.getResponsible();
+	public Long getId() {
+		return id;
 	}
 
-	public List<CustomerDto> convet(List<Customer> customer) {
-		return customer.stream().map(CustomerDto::new).collect(Collectors.toList());
-
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getName() {
 		return name;
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public String getNotes() {
 		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
 	}
 
 	public String getDbInfo() {
 		return dbInfo;
 	}
 
+	public void setDbInfo(String dbInfo) {
+		this.dbInfo = dbInfo;
+	}
+
 	public Boolean getUsesVpn() {
 		return usesVpn;
+	}
+
+	public void setUsesVpn(Boolean usesVpn) {
+		this.usesVpn = usesVpn;
 	}
 
 	public Boolean getUsesNewIntegration() {
 		return usesNewIntegration;
 	}
 
+	public void setUsesNewIntegration(Boolean usesNewIntegration) {
+		this.usesNewIntegration = usesNewIntegration;
+	}
+
 	public String getTier() {
 		return tier;
+	}
+
+	public void setTier(String tier) {
+		this.tier = tier;
 	}
 
 	public String getSegment() {
 		return segment;
 	}
 
+	public void setSegment(String segment) {
+		this.segment = segment;
+	}
+
 	public String getResponsible() {
 		return responsible;
+	}
+
+	public void setResponsible(String responsible) {
+		this.responsible = responsible;
+	}
+
+	public ContactDto getContact() {
+		return contact;
+	}
+
+	public void setContact(ContactDto contact) {
+		this.contact = contact;
 	}
 
 }

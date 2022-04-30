@@ -1,41 +1,25 @@
-package br.com.eive.sharepoint.controller.form;
-
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-
-import org.hibernate.validator.constraints.Length;
+package br.com.eive.sharepoint.controller.dto;
 
 import br.com.eive.sharepoint.type.Tier;
 
-public class CustomerForm {
-	@NotNull
-	@NotEmpty
-	@Length(min = 5, max = 255)
+public class CustomerSimpleDto {
+	private Long id;
 	private String name;
-
-	@Length(max = 4000)
 	private String notes;
-
-	@Length(max = 4000)
 	private String dbInfo;
-
-	@NotNull
 	private Boolean usesVpn;
-
 	private Boolean usesNewIntegration;
-
-	@NotNull
-	@Pattern(regexp = "^[ABC]$", message = "deve corresponder a A, B ou C")
-	private String tier;
-
-	@Length(max = 36)
+	private Tier tier;
 	private String segment;
-
-	@NotNull
-	@NotEmpty
-	@Length(min = 3, max = 80)
 	private String responsible;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public String getName() {
 		return name;
@@ -78,10 +62,10 @@ public class CustomerForm {
 	}
 
 	public Tier getTier() {
-		return Tier.valueOf(tier);
+		return tier;
 	}
 
-	public void setTier(String tier) {
+	public void setTier(Tier tier) {
 		this.tier = tier;
 	}
 
@@ -100,4 +84,5 @@ public class CustomerForm {
 	public void setResponsible(String responsible) {
 		this.responsible = responsible;
 	}
+
 }

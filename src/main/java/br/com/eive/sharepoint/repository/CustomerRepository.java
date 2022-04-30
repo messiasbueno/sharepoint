@@ -8,6 +8,7 @@ import br.com.eive.sharepoint.model.Customer;
 
 public interface CustomerRepository extends JpaRepository<Customer, Long>{
 	
-	List<Customer> findByNameContaining(String name);
+	List<Customer> findByNameContainingIgnoreCase(String name);
+	List<Customer> findByName(String name);
 
 }

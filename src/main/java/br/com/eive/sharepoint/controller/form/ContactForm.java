@@ -1,27 +1,30 @@
-package br.com.eive.sharepoint.model;
+package br.com.eive.sharepoint.controller.form;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
-import br.com.eive.sharepoint.core.BaseEntity;
+import org.hibernate.validator.constraints.Length;
 
-@Entity
-public class Contact extends BaseEntity {
-
-	@Column(nullable = false, length = 255)
+public class ContactForm {
+	@NotNull
+	@NotEmpty
+	@Length(min = 3, max = 255)
 	private String name;
 
+	// @Pattern(regexp = "/^[a-z0-9.]+@[a-z0-9]+\\.[a-z]+\\.([a-z]+)?$/i")
 	private String email;
 
+	// @Pattern(regexp = "^\\([1-9]{2}\\) (?:[2-8]|9[1-9])[0-9]{3}\\-[0-9]{4}$")
 	private String phone;
 
+	// @Pattern(regexp = "^\\([1-9]{2}\\) (?:[2-8]|9[1-9])[0-9]{3}\\-[0-9]{4}$")
 	private String cellphone;
 
+	@NotNull
 	private Boolean main;
 
-	@ManyToOne(optional = false)
-	private Customer customer;
+	private Long customerId;
 
 	public String getName() {
 		return name;
@@ -63,12 +66,12 @@ public class Contact extends BaseEntity {
 		this.main = main;
 	}
 
-	public Customer getCustomer() {
-		return customer;
+	public Long getCustomerId() {
+		return customerId;
 	}
 
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
+	public void setCustomerId(Long customerId) {
+		this.customerId = customerId;
 	}
 
 }

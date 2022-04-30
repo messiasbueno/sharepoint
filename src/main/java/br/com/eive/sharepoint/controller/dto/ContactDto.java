@@ -1,51 +1,58 @@
 package br.com.eive.sharepoint.controller.dto;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import br.com.eive.sharepoint.model.Contact;
-
 public class ContactDto {
+	private Long id;
 	private String name;
 	private String email;
 	private String phone;
 	private String cellphone;
 	private Boolean main;
 
-	public ContactDto() {
-		
+	public Long getId() {
+		return id;
 	}
 
-	public ContactDto(Contact contact) {
-		this.name = contact.getName();
-		this.email = contact.getEmail();
-		this.phone = contact.getPhone();
-		this.cellphone = contact.getCellphone();
-		this.main = contact.getMain();
-	}
-
-	public List<ContactDto> convet(List<Contact> contact) {
-		return contact.stream().map(ContactDto::new).collect(Collectors.toList());
-
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getName() {
 		return name;
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public String getEmail() {
 		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public String getPhone() {
 		return phone;
 	}
 
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
 	public String getCellphone() {
 		return cellphone;
 	}
 
+	public void setCellphone(String cellphone) {
+		this.cellphone = cellphone;
+	}
+
 	public Boolean getMain() {
 		return main;
+	}
+
+	public void setMain(Boolean main) {
+		this.main = main;
 	}
 }

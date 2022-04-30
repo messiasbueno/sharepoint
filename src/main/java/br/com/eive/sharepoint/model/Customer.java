@@ -2,73 +2,52 @@ package br.com.eive.sharepoint.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
+
+import br.com.eive.sharepoint.core.BaseEntity;
+import br.com.eive.sharepoint.type.Tier;
 
 @Entity
-@Table(name = "customer")
-public class Customer {
+public class Customer extends BaseEntity{
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	@Column(nullable = false, length = 255)
 	private String name;
+
+	@Column(length = 4000)
 	private String notes;
+
+	@Column(length = 4000)
 	private String dbInfo;
-	private Boolean usesVpn;
-	private Boolean usesNewIntegration;
-	private String tier;
+
+	@Column(nullable = false)
+	private Boolean usesVpn = false;
+
+	private Boolean usesNewIntegration = false;
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false, length = 1)
+	private Tier tier;
+
+	@Column(length = 36)
 	private String segment;
+
+	@Column(nullable = false, length = 80)
 	private String responsible;
-	@OneToMany(mappedBy = "customer")
+
+	@OneToMany(cascade = CascadeType.REMOVE, mappedBy = "customer")
 	private List<Contact> contact = new ArrayList<>();
 
-	public Customer() {
+	@OneToMany(cascade = CascadeType.REMOVE, mappedBy = "customer")
+	private List<Product> product = new ArrayList<>();
 
-	}
-
-	public Customer(String name, String notes, String dbInfo, Boolean usesVpn, Boolean usesNewIntegration, String tier,
-			String segment, String responsible) {
-		this.name = name;
-		this.notes = notes;
-		this.dbInfo = dbInfo;
-		this.usesVpn = usesVpn;
-		this.usesNewIntegration = usesNewIntegration;
-		this.tier = tier;
-		this.segment = segment;
-		this.responsible = responsible;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(id);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Customer other = (Customer) obj;
-		return Objects.equals(id, other.id);
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
+	@OneToMany(cascade = CascadeType.REMOVE, mappedBy = "customer")
+	private List<Server> server = new ArrayList<>();
 
 	public String getName() {
 		return name;
@@ -110,11 +89,11 @@ public class Customer {
 		this.usesNewIntegration = usesNewIntegration;
 	}
 
-	public String getTier() {
+	public Tier getTier() {
 		return tier;
 	}
 
-	public void setTier(String tier) {
+	public void setTier(Tier tier) {
 		this.tier = tier;
 	}
 
@@ -140,6 +119,22 @@ public class Customer {
 
 	public void setContact(List<Contact> contact) {
 		this.contact = contact;
+	}
+
+	public List<Product> getProduct() {
+		return product;
+	}
+
+	public void setProduct(List<Product> product) {
+		this.product = product;
+	}
+
+	public List<Server> getServer() {
+		return server;
+	}
+
+	public void setServer(List<Server> server) {
+		this.server = server;
 	}
 
 }

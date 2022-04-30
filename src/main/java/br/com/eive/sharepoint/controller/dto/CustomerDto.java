@@ -1,8 +1,7 @@
 package br.com.eive.sharepoint.controller.dto;
 
-import org.springframework.stereotype.Component;
+import br.com.eive.sharepoint.type.Tier;
 
-@Component
 public class CustomerDto {
 	private Long id;
 	private String name;
@@ -10,7 +9,7 @@ public class CustomerDto {
 	private String dbInfo;
 	private Boolean usesVpn;
 	private Boolean usesNewIntegration;
-	private String tier;
+	private Tier tier;
 	private String segment;
 	private String responsible;
 	private ContactDto contact;
@@ -63,11 +62,11 @@ public class CustomerDto {
 		this.usesNewIntegration = usesNewIntegration;
 	}
 
-	public String getTier() {
+	public Tier getTier() {
 		return tier;
 	}
 
-	public void setTier(String tier) {
+	public void setTier(Tier tier) {
 		this.tier = tier;
 	}
 

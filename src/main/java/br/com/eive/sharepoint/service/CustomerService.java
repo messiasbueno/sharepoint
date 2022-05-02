@@ -4,7 +4,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
+
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -73,8 +76,9 @@ public class CustomerService {
 	}
 
 	public CustomerDto create(CustomerForm customerForm) {
-		return modelMapper.map(customerRepository.save(modelMapper.map(customerForm, Customer.class)),
-				CustomerDto.class);
+		Customer customer = modelMapper.map(customerForm, Customer.class);
+		customer = customerRepository.save(customer);
+		return modelMapper.map(customer, CustomerDto.class);
 	}
 
 	public Optional<CustomerDto> update(Long id, CustomerForm customerForm) {
@@ -105,4 +109,13 @@ public class CustomerService {
 		return customerRepository.existsById(id);
 	}
 
+	@PostConstruct
+	private void modelMapperConfig() {
+		this.modelMapper.addMappings(new PropertyMap<CustomerForm, Customer>() {
+			@Override
+			protected void configure() {
+				skip(destination.getId());
+			}
+		});
+	}
 }

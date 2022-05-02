@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,17 +34,19 @@ public class ContactController {
 
 	@GetMapping
 	public ResponseEntity<List<ContactDto>> findAll() {
-		return ResponseEntity.ok(contactService.findAll());
+		List<ContactDto> contacts = contactService.findAll();
+		return ResponseEntity.ok(contacts);
 	}
 
 	@GetMapping("/customer/{id}")
-	public ResponseEntity<?> findId(@PathVariable("id") Long customerId) {
-		return ResponseEntity.ok(contactService.findByCustomerId(customerId));
+	public ResponseEntity<List<ContactDto>> findId(@PathVariable("id") Long customerId) {
+		List<ContactDto> contacts = contactService.findByCustomerId(customerId);
+		return ResponseEntity.ok(contacts);
 	}
 
 	@PostMapping
 	@Transactional
-	public ResponseEntity<ContactDto> create(@RequestBody @Validated ContactForm contactForm,
+	public ResponseEntity<ContactDto> create(@RequestBody @Valid ContactForm contactForm,
 			UriComponentsBuilder uriBuilder) {
 		ContactDto contact = contactService.create(contactForm);
 
@@ -56,7 +58,7 @@ public class ContactController {
 	@PutMapping("/{id}")
 	@Transactional
 	public ResponseEntity<ContactDto> update(@PathVariable("id") Long id,
-			@RequestBody @Validated ContactForm contactForm) {
+			@RequestBody @Valid ContactForm contactForm) {
 		Optional<ContactDto> contact = contactService.update(id, contactForm);
 		if (!contact.isPresent()) {
 			return ResponseEntity.notFound().build();
@@ -67,7 +69,7 @@ public class ContactController {
 
 	@DeleteMapping("/{id}")
 	@Transactional
-	public ResponseEntity<?> remove(@PathVariable Long id) {
+	public ResponseEntity<Object> remove(@PathVariable Long id) {
 		if (!contactService.remove(id)) {
 			return ResponseEntity.notFound().build();
 		}

@@ -5,7 +5,10 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
+
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -32,13 +35,19 @@ public class ProductService {
 	CustomerService customerService;
 
 	public List<ProductDto> findAll() {
-		return productRepository.findAll().stream().map(product -> modelMapper.map(product, ProductDto.class))
+		List<Product> products = productRepository.findAll();
+		List<ProductDto> productsDto = products.stream().map(product -> modelMapper.map(product, ProductDto.class))
 				.collect(Collectors.toList());
+
+		return productsDto;
 	}
 
 	public List<ProductDto> findByCustomerId(Long customerId) {
-		return productRepository.findByCustomerId(customerId).stream()
-				.map(product -> modelMapper.map(product, ProductDto.class)).collect(Collectors.toList());
+		List<Product> products = productRepository.findByCustomerId(customerId);
+		List<ProductDto> productsDto = products.stream().map(product -> modelMapper.map(product, ProductDto.class))
+				.collect(Collectors.toList());
+
+		return productsDto;
 	}
 
 	public ProductDto create(ProductForm productForm) {
@@ -47,7 +56,10 @@ public class ProductService {
 					new Object[] { productForm.getCustomerId() }, Locale.getDefault()));
 		}
 
-		return modelMapper.map(productRepository.save(modelMapper.map(productForm, Product.class)), ProductDto.class);
+		Product product = modelMapper.map(productForm, Product.class);
+		product = productRepository.save(product);
+
+		return modelMapper.map(product, ProductDto.class);
 	}
 
 	public Optional<ProductDto> update(Long id, ProductForm productForm) {
@@ -72,5 +84,15 @@ public class ProductService {
 
 		productRepository.deleteById(id);
 		return true;
+	}
+
+	@PostConstruct
+	private void modelMapperConfig() {
+		this.modelMapper.addMappings(new PropertyMap<ProductForm, Product>() {
+			@Override
+			protected void configure() {
+				skip(destination.getId());
+			}
+		});
 	}
 }

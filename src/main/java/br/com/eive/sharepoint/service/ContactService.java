@@ -5,7 +5,10 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
+
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -32,13 +35,19 @@ public class ContactService {
 	CustomerService customerService;
 
 	public List<ContactDto> findAll() {
-		return contactRepository.findAll().stream().map(contact -> modelMapper.map(contact, ContactDto.class))
+		List<Contact> contacts = contactRepository.findAll();
+		List<ContactDto> contactsDto = contacts.stream().map(contact -> modelMapper.map(contact, ContactDto.class))
 				.collect(Collectors.toList());
+
+		return contactsDto;
 	}
 
 	public List<ContactDto> findByCustomerId(Long customerId) {
-		return contactRepository.findByCustomerId(customerId).stream()
-				.map(contact -> modelMapper.map(contact, ContactDto.class)).collect(Collectors.toList());
+		List<Contact> contacts = contactRepository.findByCustomerId(customerId);
+		List<ContactDto> contactsDto = contacts.stream().map(contact -> modelMapper.map(contact, ContactDto.class))
+				.collect(Collectors.toList());
+
+		return contactsDto;
 	}
 
 	public ContactDto create(ContactForm contactForm) {
@@ -47,7 +56,10 @@ public class ContactService {
 					new Object[] { contactForm.getCustomerId() }, Locale.getDefault()));
 		}
 
-		return modelMapper.map(contactRepository.save(modelMapper.map(contactForm, Contact.class)), ContactDto.class);
+		Contact contact = modelMapper.map(contactForm, Contact.class);
+		contact = contactRepository.save(contact);
+
+		return modelMapper.map(contact, ContactDto.class);
 	}
 
 	public Optional<ContactDto> update(Long id, ContactForm contactForm) {
@@ -72,5 +84,15 @@ public class ContactService {
 
 		contactRepository.deleteById(id);
 		return true;
+	}
+
+	@PostConstruct
+	private void modelMapperConfig() {
+		this.modelMapper.addMappings(new PropertyMap<ContactForm, Contact>() {
+			@Override
+			protected void configure() {
+				skip(destination.getId());
+			}
+		});
 	}
 }

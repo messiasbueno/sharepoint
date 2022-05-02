@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,17 +34,19 @@ public class ProductController {
 
 	@GetMapping
 	public ResponseEntity<List<ProductDto>> findAll() {
-		return ResponseEntity.ok(productService.findAll());
+		List<ProductDto> products = productService.findAll();
+		return ResponseEntity.ok(products);
 	}
 
 	@GetMapping("/customer/{id}")
-	public ResponseEntity<?> findId(@PathVariable("id") Long customerId) {
-		return ResponseEntity.ok(productService.findByCustomerId(customerId));
+	public ResponseEntity<List<ProductDto>> findId(@PathVariable("id") Long customerId) {
+		List<ProductDto> products = productService.findByCustomerId(customerId);
+		return ResponseEntity.ok(products);
 	}
 
 	@PostMapping
 	@Transactional
-	public ResponseEntity<ProductDto> create(@RequestBody @Validated ProductForm productForm,
+	public ResponseEntity<ProductDto> create(@RequestBody @Valid ProductForm productForm,
 			UriComponentsBuilder uriBuilder) {
 		ProductDto product = productService.create(productForm);
 
@@ -56,7 +58,7 @@ public class ProductController {
 	@PutMapping("/{id}")
 	@Transactional
 	public ResponseEntity<ProductDto> update(@PathVariable("id") Long id,
-			@RequestBody @Validated ProductForm productForm) {
+			@RequestBody @Valid ProductForm productForm) {
 		Optional<ProductDto> product = productService.update(id, productForm);
 		if (!product.isPresent()) {
 			return ResponseEntity.notFound().build();
@@ -67,7 +69,7 @@ public class ProductController {
 
 	@DeleteMapping("/{id}")
 	@Transactional
-	public ResponseEntity<?> remove(@PathVariable Long id) {
+	public ResponseEntity<Object> remove(@PathVariable Long id) {
 		if (!productService.remove(id)) {
 			return ResponseEntity.notFound().build();
 		}

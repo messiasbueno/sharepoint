@@ -5,7 +5,10 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
+
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -32,13 +35,19 @@ public class ServerService {
 	CustomerService customerService;
 
 	public List<ServerDto> findAll() {
-		return serverRepository.findAll().stream().map(server -> modelMapper.map(server, ServerDto.class))
+		List<Server> servers = serverRepository.findAll();
+		List<ServerDto> serversDto = servers.stream().map(server -> modelMapper.map(server, ServerDto.class))
 				.collect(Collectors.toList());
+
+		return serversDto;
 	}
 
 	public List<ServerDto> findByCustomerId(Long customerId) {
-		return serverRepository.findByCustomerId(customerId).stream()
-				.map(server -> modelMapper.map(server, ServerDto.class)).collect(Collectors.toList());
+		List<Server> servers = serverRepository.findByCustomerId(customerId);
+		List<ServerDto> serversDto = servers.stream().map(server -> modelMapper.map(server, ServerDto.class))
+				.collect(Collectors.toList());
+
+		return serversDto;
 	}
 
 	public ServerDto create(ServerForm serverForm) {
@@ -47,7 +56,10 @@ public class ServerService {
 					new Object[] { serverForm.getCustomerId() }, Locale.getDefault()));
 		}
 
-		return modelMapper.map(serverRepository.save(modelMapper.map(serverForm, Server.class)), ServerDto.class);
+		Server server = modelMapper.map(serverForm, Server.class);
+		server = serverRepository.save(server);
+
+		return modelMapper.map(server, ServerDto.class);
 	}
 
 	public Optional<ServerDto> update(Long id, ServerForm serverForm) {
@@ -72,5 +84,15 @@ public class ServerService {
 
 		serverRepository.deleteById(id);
 		return true;
+	}
+
+	@PostConstruct
+	private void modelMapperConfig() {
+		this.modelMapper.addMappings(new PropertyMap<ServerForm, Server>() {
+			@Override
+			protected void configure() {
+				skip(destination.getId());
+			}
+		});
 	}
 }

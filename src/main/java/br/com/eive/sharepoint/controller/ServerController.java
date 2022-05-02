@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,17 +34,19 @@ public class ServerController {
 
 	@GetMapping
 	public ResponseEntity<List<ServerDto>> findAll() {
-		return ResponseEntity.ok(serverService.findAll());
+		List<ServerDto> servers = serverService.findAll();
+		return ResponseEntity.ok(servers);
 	}
 
 	@GetMapping("/customer/{id}")
-	public ResponseEntity<?> findId(@PathVariable("id") Long customerId) {
-		return ResponseEntity.ok(serverService.findByCustomerId(customerId));
+	public ResponseEntity<List<ServerDto>> findId(@PathVariable("id") Long customerId) {
+		List<ServerDto> servers = serverService.findByCustomerId(customerId);
+		return ResponseEntity.ok(servers);
 	}
 
 	@PostMapping
 	@Transactional
-	public ResponseEntity<ServerDto> create(@RequestBody @Validated ServerForm serverForm,
+	public ResponseEntity<ServerDto> create(@RequestBody @Valid ServerForm serverForm,
 			UriComponentsBuilder uriBuilder) {
 		ServerDto server = serverService.create(serverForm);
 
@@ -56,7 +58,7 @@ public class ServerController {
 	@PutMapping("/{id}")
 	@Transactional
 	public ResponseEntity<ServerDto> update(@PathVariable("id") Long id,
-			@RequestBody @Validated ServerForm serverForm) {
+			@RequestBody @Valid ServerForm serverForm) {
 		Optional<ServerDto> server = serverService.update(id, serverForm);
 		if (!server.isPresent()) {
 			return ResponseEntity.notFound().build();
@@ -67,7 +69,7 @@ public class ServerController {
 
 	@DeleteMapping("/{id}")
 	@Transactional
-	public ResponseEntity<?> remove(@PathVariable Long id) {
+	public ResponseEntity<Object> remove(@PathVariable Long id) {
 		if (!serverService.remove(id)) {
 			return ResponseEntity.notFound().build();
 		}

@@ -1,8 +1,10 @@
 package br.com.eive.sharepoint.controller.form;
 
+
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
 
 import org.hibernate.validator.constraints.Length;
 
@@ -12,18 +14,20 @@ public class ContactForm {
 	@Length(min = 3, max = 255)
 	private String name;
 
-	// @Pattern(regexp = "/^[a-z0-9.]+@[a-z0-9]+\\.[a-z]+\\.([a-z]+)?$/i")
+	@Pattern(regexp = "^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+).(.[a-z]{2,3})$|^$")
 	private String email;
-
-	// @Pattern(regexp = "^\\([1-9]{2}\\) (?:[2-8]|9[1-9])[0-9]{3}\\-[0-9]{4}$")
+	
+	@Pattern(regexp = "\\(?\\d{2}\\)?\\s?9?\\d{4}[\\-\\s]?\\d{4}|^$")
 	private String phone;
 
-	// @Pattern(regexp = "^\\([1-9]{2}\\) (?:[2-8]|9[1-9])[0-9]{3}\\-[0-9]{4}$")
+	@Pattern(regexp = "\\(?\\d{2}\\)?\\s?9?\\d{4}[\\-\\s]?\\d{4}|^$")
 	private String cellphone;
 
 	@NotNull
 	private Boolean main;
 
+	@Positive
+	@NotNull
 	private Long customerId;
 
 	public String getName() {

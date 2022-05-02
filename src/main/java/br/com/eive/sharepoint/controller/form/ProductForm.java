@@ -4,11 +4,12 @@ import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 import org.hibernate.validator.constraints.Length;
 
 public class ProductForm {
-    @NotNull
+	@NotNull
 	@NotEmpty
 	@Length(min = 3, max = 255)
 	private String name;
@@ -18,6 +19,8 @@ public class ProductForm {
 
 	private LocalDateTime acquisitionDate;
 
+	@Positive
+	@NotNull
 	private Long customerId;
 
 	public String getName() {

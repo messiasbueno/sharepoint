@@ -3,11 +3,9 @@ package br.com.eive.sharepoint.controller;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -24,8 +22,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.eive.sharepoint.controller.dto.ProductDto;
 import br.com.eive.sharepoint.controller.form.ProductForm;
-import br.com.eive.sharepoint.model.Product;
-import br.com.eive.sharepoint.repository.ProductRepository;
+import br.com.eive.sharepoint.service.ProductService;
 
 @CrossOrigin
 @RestController
@@ -33,80 +30,48 @@ import br.com.eive.sharepoint.repository.ProductRepository;
 public class ProductController {
 
 	@Autowired
-	ProductRepository productRepository;
-
-	@Autowired
-	ModelMapper modelMapper;
+	ProductService productService;
 
 	@GetMapping
 	public ResponseEntity<List<ProductDto>> findAll() {
-
-		List<Product> products = productRepository.findAll();
-
-		if (products.isEmpty()) {
-			return ResponseEntity.noContent().build();
-		}
-
-		List<ProductDto> productsDto = products.stream().map(product -> modelMapper.map(product, ProductDto.class))
-				.collect(Collectors.toList());
-
-		return ResponseEntity.ok(productsDto);
+		return ResponseEntity.ok(productService.findAll());
 	}
 
-	@RequestMapping("customer/{id}")
-	@GetMapping
-	public ResponseEntity<List<ProductDto>> findId(@PathVariable("id") Long id) {
-
-		List<Product> products = productRepository.findByCustomerId(id);
-		if (products.isEmpty()) {
-			return ResponseEntity.noContent().build();
-		}
-
-		List<ProductDto> productsDto = products.stream().map(product -> modelMapper.map(product, ProductDto.class))
-				.collect(Collectors.toList());
-
-		return ResponseEntity.ok(productsDto);
+	@GetMapping("/customer/{id}")
+	public ResponseEntity<?> findId(@PathVariable("id") Long customerId) {
+		return ResponseEntity.ok(productService.findByCustomerId(customerId));
 	}
 
 	@PostMapping
 	@Transactional
 	public ResponseEntity<ProductDto> create(@RequestBody @Validated ProductForm productForm,
 			UriComponentsBuilder uriBuilder) {
-		Product product = modelMapper.map(productForm, Product.class);
-		product = productRepository.save(product);
+		ProductDto product = productService.create(productForm);
 
 		URI uri = uriBuilder.path("/product/{id}").buildAndExpand(product.getId()).toUri();
 
-		return ResponseEntity.created(uri).body(modelMapper.map(product, ProductDto.class));
+		return ResponseEntity.created(uri).body(product);
 	}
 
-	@RequestMapping("/{id}")
-	@PutMapping
+	@PutMapping("/{id}")
 	@Transactional
 	public ResponseEntity<ProductDto> update(@PathVariable("id") Long id,
 			@RequestBody @Validated ProductForm productForm) {
-		Optional<Product> product = productRepository.findById(id);
-
+		Optional<ProductDto> product = productService.update(id, productForm);
 		if (!product.isPresent()) {
 			return ResponseEntity.notFound().build();
 		}
 
-		Product productUpdate = product.get();
-		modelMapper.map(productForm, productUpdate);
-		productUpdate = productRepository.save(productUpdate);
-
-		return ResponseEntity.ok(modelMapper.map(productUpdate, ProductDto.class));
+		return ResponseEntity.ok(product.get());
 	}
 
 	@DeleteMapping("/{id}")
 	@Transactional
-	public ResponseEntity<?> remover(@PathVariable Long id) {
-		Optional<Product> product = productRepository.findById(id);
-		if (product.isPresent()) {
-			productRepository.deleteById(id);
-			return ResponseEntity.ok().build();
+	public ResponseEntity<?> remove(@PathVariable Long id) {
+		if (!productService.remove(id)) {
+			return ResponseEntity.notFound().build();
 		}
 
-		return ResponseEntity.notFound().build();
+		return ResponseEntity.ok().build();
 	}
 }

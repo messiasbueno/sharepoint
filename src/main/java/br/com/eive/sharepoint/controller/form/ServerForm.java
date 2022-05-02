@@ -3,6 +3,7 @@ package br.com.eive.sharepoint.controller.form;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
 
 import org.hibernate.validator.constraints.Length;
 
@@ -19,6 +20,7 @@ public class ServerForm {
 	private String login;
 
 	@NotNull
+	@NotEmpty
 	private String password;
 
 	@NotNull
@@ -29,6 +31,8 @@ public class ServerForm {
 	@Length(max = 4000)
 	private String notes;
 
+	@Positive
+	@NotNull
 	private Long customerId;
 
 	public String getIp() {

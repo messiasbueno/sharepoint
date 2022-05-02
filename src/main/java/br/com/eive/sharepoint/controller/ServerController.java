@@ -3,11 +3,9 @@ package br.com.eive.sharepoint.controller;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -24,8 +22,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.eive.sharepoint.controller.dto.ServerDto;
 import br.com.eive.sharepoint.controller.form.ServerForm;
-import br.com.eive.sharepoint.model.Server;
-import br.com.eive.sharepoint.repository.ServerRepository;
+import br.com.eive.sharepoint.service.ServerService;
 
 @CrossOrigin
 @RestController
@@ -33,80 +30,48 @@ import br.com.eive.sharepoint.repository.ServerRepository;
 public class ServerController {
 
 	@Autowired
-	ServerRepository serverRepository;
-
-	@Autowired
-	ModelMapper modelMapper;
+	ServerService serverService;
 
 	@GetMapping
-	public ResponseEntity<List<?>> findAll() {
-
-		List<Server> servers = serverRepository.findAll();
-
-		if (servers.isEmpty()) {
-			return ResponseEntity.noContent().build();
-		}
-
-		List<ServerDto> serversDto = servers.stream().map(server -> modelMapper.map(server, ServerDto.class))
-				.collect(Collectors.toList());
-
-		return ResponseEntity.ok(serversDto);
+	public ResponseEntity<List<ServerDto>> findAll() {
+		return ResponseEntity.ok(serverService.findAll());
 	}
 
-	@RequestMapping("server/{id}")
-	@GetMapping
-	public ResponseEntity<?> findId(@PathVariable("id") Long id) {
-
-		List<Server> servers = serverRepository.findByCustomerId(id);
-		if (servers.isEmpty()) {
-			return ResponseEntity.noContent().build();
-		}
-
-		List<ServerDto> serversDto = servers.stream().map(server -> modelMapper.map(server, ServerDto.class))
-				.collect(Collectors.toList());
-
-		return ResponseEntity.ok(serversDto);
+	@GetMapping("/customer/{id}")
+	public ResponseEntity<?> findId(@PathVariable("id") Long customerId) {
+		return ResponseEntity.ok(serverService.findByCustomerId(customerId));
 	}
 
 	@PostMapping
 	@Transactional
 	public ResponseEntity<ServerDto> create(@RequestBody @Validated ServerForm serverForm,
 			UriComponentsBuilder uriBuilder) {
-		Server server = modelMapper.map(serverForm, Server.class);
-		server = serverRepository.save(server);
+		ServerDto server = serverService.create(serverForm);
 
 		URI uri = uriBuilder.path("/server/{id}").buildAndExpand(server.getId()).toUri();
 
-		return ResponseEntity.created(uri).body(modelMapper.map(server, ServerDto.class));
+		return ResponseEntity.created(uri).body(server);
 	}
 
-	@RequestMapping("/{id}")
-	@PutMapping
+	@PutMapping("/{id}")
 	@Transactional
 	public ResponseEntity<ServerDto> update(@PathVariable("id") Long id,
 			@RequestBody @Validated ServerForm serverForm) {
-		Optional<Server> server = serverRepository.findById(id);
-
+		Optional<ServerDto> server = serverService.update(id, serverForm);
 		if (!server.isPresent()) {
 			return ResponseEntity.notFound().build();
 		}
 
-		Server serverUpdate = server.get();
-		modelMapper.map(serverForm, serverUpdate);
-		serverUpdate = serverRepository.save(serverUpdate);
-
-		return ResponseEntity.ok(modelMapper.map(serverUpdate, ServerDto.class));
+		return ResponseEntity.ok(server.get());
 	}
-	
+
 	@DeleteMapping("/{id}")
 	@Transactional
-	public ResponseEntity<?> remover(@PathVariable Long id) {
-		Optional<Server> server = serverRepository.findById(id);
-		if (server.isPresent()) {
-			serverRepository.deleteById(id);
-			return ResponseEntity.ok().build();
+	public ResponseEntity<?> remove(@PathVariable Long id) {
+		if (!serverService.remove(id)) {
+			return ResponseEntity.notFound().build();
 		}
 
-		return ResponseEntity.notFound().build();
+		return ResponseEntity.ok().build();
 	}
 }

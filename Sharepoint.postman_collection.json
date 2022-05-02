@@ -1,0 +1,456 @@
+{
+	"info": {
+		"_postman_id": "49d7322e-b200-462f-971a-f53d018632ef",
+		"name": "Sharepoint",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Customer",
+			"item": [
+				{
+					"name": "customer",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/customer",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"customer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "customer/{id}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/customer/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"customer",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "customer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Messias\",\r\n    \"notes\": \"\",\r\n    \"dbInfo\": \"\",\r\n    \"usesVpn\": \"true\",\r\n    \"usesNewIntegration\": false,\r\n    \"tier\": \"C\",\r\n    \"segment\": \"\",\r\n    \"responsible\": \"Ana\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/customer",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"customer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "customer/{id}",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Bueno\",\r\n    \"notes\": \"\",\r\n    \"dbInfo\": \"\",\r\n    \"usesVpn\": \"true\",\r\n    \"usesNewIntegration\": false,\r\n    \"tier\": \"B\",\r\n    \"segment\": \"\",\r\n    \"responsible\": \"Ana\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/customer/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"customer",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "customer/{id}",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/customer/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"customer",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Server",
+			"item": [
+				{
+					"name": "server",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/server",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"server"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "server/ customer/{id}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/server/customer/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"server",
+								"customer",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "server",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"ip\":\"192.168.1.151\",\r\n   \"dns\":\"192.168.1.1\",\r\n   \"login\":\"user\",\r\n   \"password\":\"senha\",\r\n   \"name\":\"Messias\",\r\n   \"notes\":\"teste\",\r\n   \"customerId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/server",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"server"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "server{id}",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ip\": \"192.168.0.1\",\r\n    \"dns\": \"192.168.1.1\",\r\n    \"login\": \"outro\",\r\n    \"password\": \"aham\",\r\n    \"name\": \"local\",\r\n    \"notes\": \"\",\r\n    \"customerId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/server/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"server",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "server/{id}",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/server/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"server",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "product/",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/product",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "product/ customer/{id}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/product/customer/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"product",
+								"customer",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "product",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"aaaaa\",\r\n    \"notes\": \"\",\r\n    \"acquisitionDate\": \"2022-04-30T14:36:19\",\r\n    \"customerId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/product",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "product/{id}",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"batata\",\r\n    \"notes\": \"\",\r\n    \"acquisitionDate\": \"2022-04-30T14:36:19\",\r\n    \"customerId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/product/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"product",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "product/{id}",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/product/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"product",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Contact",
+			"item": [
+				{
+					"name": "contact",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/contact",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"contact"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "contact/ customer/{id}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/contact/customer/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"contact",
+								"customer",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "contact",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"para\",\r\n    \"email\": \"messias@gmail.com\",\r\n    \"phone\": \"(43) 99585-1315\",\r\n    \"cellphone\": \"\",\r\n    \"main\": true,\r\n    \"customerId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/contact",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"contact"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "contact/{id}",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"troca\",\r\n    \"email\": \"teste@outro.com.br\",\r\n    \"phone\": \"(43)99876-6525\",\r\n    \"cellphone\": \"\",\r\n    \"main\": true,\r\n    \"customerId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/contact/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"contact",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "contact/{id}",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/contact/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"contact",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

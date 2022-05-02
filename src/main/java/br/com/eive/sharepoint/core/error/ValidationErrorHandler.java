@@ -34,13 +34,24 @@ public class ValidationErrorHandler {
 		
 		return dto;
 	}
-
+	
 	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	public List<ErrorFormDto> handle(HttpMessageNotReadableException exception) {
 		List<ErrorFormDto> dto = new ArrayList<>();
 		
 		ErrorFormDto erro = new ErrorFormDto("JSON inválido", exception.getMessage());
+		dto.add(erro);
+	
+		return dto;
+	}
+	
+	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(ErrorException.class)
+	public List<ErrorFormDto> handle(ErrorException exception) {
+		List<ErrorFormDto> dto = new ArrayList<>();
+		
+		ErrorFormDto erro = new ErrorFormDto(exception.getField(), exception.getMessage());
 		dto.add(erro);
 	
 		return dto;

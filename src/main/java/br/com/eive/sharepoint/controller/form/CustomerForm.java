@@ -11,7 +11,7 @@ import br.com.eive.sharepoint.type.Tier;
 public class CustomerForm {
 	@NotNull
 	@NotEmpty
-	@Length(min = 5, max = 255)
+	@Length(min = 3, max = 255)
 	private String name;
 
 	@Length(max = 4000)

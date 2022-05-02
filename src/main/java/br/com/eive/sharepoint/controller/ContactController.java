@@ -3,11 +3,9 @@ package br.com.eive.sharepoint.controller;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -24,8 +22,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.eive.sharepoint.controller.dto.ContactDto;
 import br.com.eive.sharepoint.controller.form.ContactForm;
-import br.com.eive.sharepoint.model.Contact;
-import br.com.eive.sharepoint.repository.ContactRepository;
+import br.com.eive.sharepoint.service.ContactService;
 
 @CrossOrigin
 @RestController
@@ -33,80 +30,48 @@ import br.com.eive.sharepoint.repository.ContactRepository;
 public class ContactController {
 
 	@Autowired
-	ContactRepository contactRepository;
-
-	@Autowired
-	ModelMapper modelMapper;
+	ContactService contactService;
 
 	@GetMapping
 	public ResponseEntity<List<ContactDto>> findAll() {
-
-		List<Contact> contacts = contactRepository.findAll();
-
-		if (contacts.isEmpty()) {
-			return ResponseEntity.noContent().build();
-		}
-
-		List<ContactDto> contactsDto = contacts.stream().map(contact -> modelMapper.map(contact, ContactDto.class))
-				.collect(Collectors.toList());
-
-		return ResponseEntity.ok(contactsDto);
+		return ResponseEntity.ok(contactService.findAll());
 	}
 
-	@RequestMapping("contact/{id}")
-	@GetMapping
-	public ResponseEntity<List<ContactDto>> findId(@PathVariable("id") Long id) {
-
-		List<Contact> contacts = contactRepository.findByCustomerId(id);
-		if (contacts.isEmpty()) {
-			return ResponseEntity.noContent().build();
-		}
-
-		List<ContactDto> contactsDto = contacts.stream().map(contact -> modelMapper.map(contact, ContactDto.class))
-				.collect(Collectors.toList());
-
-		return ResponseEntity.ok(contactsDto);
+	@GetMapping("/customer/{id}")
+	public ResponseEntity<?> findId(@PathVariable("id") Long customerId) {
+		return ResponseEntity.ok(contactService.findByCustomerId(customerId));
 	}
 
 	@PostMapping
 	@Transactional
 	public ResponseEntity<ContactDto> create(@RequestBody @Validated ContactForm contactForm,
 			UriComponentsBuilder uriBuilder) {
-		Contact contact = modelMapper.map(contactForm, Contact.class);
-		contact = contactRepository.save(contact);
+		ContactDto contact = contactService.create(contactForm);
 
 		URI uri = uriBuilder.path("/contact/{id}").buildAndExpand(contact.getId()).toUri();
 
-		return ResponseEntity.created(uri).body(modelMapper.map(contact, ContactDto.class));
+		return ResponseEntity.created(uri).body(contact);
 	}
 
-	@RequestMapping("/{id}")
-	@PutMapping
+	@PutMapping("/{id}")
 	@Transactional
 	public ResponseEntity<ContactDto> update(@PathVariable("id") Long id,
 			@RequestBody @Validated ContactForm contactForm) {
-		Optional<Contact> contact = contactRepository.findById(id);
-
+		Optional<ContactDto> contact = contactService.update(id, contactForm);
 		if (!contact.isPresent()) {
 			return ResponseEntity.notFound().build();
 		}
 
-		Contact contactUpdate = contact.get();
-		modelMapper.map(contactForm, contactUpdate);
-		contactUpdate = contactRepository.save(contactUpdate);
-
-		return ResponseEntity.ok(modelMapper.map(contactUpdate, ContactDto.class));
+		return ResponseEntity.ok(contact.get());
 	}
 
 	@DeleteMapping("/{id}")
 	@Transactional
-	public ResponseEntity<?> remover(@PathVariable Long id) {
-		Optional<Contact> contact = contactRepository.findById(id);
-		if (contact.isPresent()) {
-			contactRepository.deleteById(id);
-			return ResponseEntity.ok().build();
+	public ResponseEntity<?> remove(@PathVariable Long id) {
+		if (!contactService.remove(id)) {
+			return ResponseEntity.notFound().build();
 		}
 
-		return ResponseEntity.notFound().build();
+		return ResponseEntity.ok().build();
 	}
 }
